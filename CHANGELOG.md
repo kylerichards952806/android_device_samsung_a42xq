@@ -3,12 +3,14 @@
 ## Highlights
 
 * First build of LineageOS 24.0 for a42xq with SELinux fully enforcing and the ROM signed with private keys.
+* The lockscreen PIN now survives a reboot, and the platform picked up fixes for brightness, power hints, thermal reporting, charging and memory compression.
 
 ## Device trees
 
 * a42xq: added the `libshim_samsungaudioparams` shim, fixing in-call audio on the sm7225 platform.
 * a42xq: added the nested `vendor/samsung/sm7225-common/a42xq` Soong namespace so the device blobs resolve from the combined vendor repository.
 * a42xq: under-display fingerprint geometry (sensor position and radius) is declared to the framework, so the prompt uses the UDFPS UI rather than the generic fallback.
+* a42xq: no device-specific changes in this build. The lockscreen PIN, brightness, thermal, power hint and memory compression fixes all come from the shared sm7225 platform tree.
 
 ## ROM
 
@@ -18,8 +20,3 @@
 ## Kernel
 
 * No kernel changes in this release.
-
-## Build and signing
-
-* All APK signing keys and the AVB key used for vbmeta and recovery are private, replacing the public AOSP test keys.
-* The first flash over a publicly-keyed build requires wiping data, as the signing keys changed.
