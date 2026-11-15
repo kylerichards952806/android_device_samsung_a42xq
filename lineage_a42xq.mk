@@ -53,3 +53,7 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
     BuildFingerprint=samsung/a42xqxx/qssi:12/SP1A.210812.016/A426BXXU8DXG2:user/release-keys \
     DeviceProduct=a42xq \
     SystemName=a42xq
+
+# The SM7225 GPU cannot hold 60 Hz while SystemUI blurs the shade.
+# Keep shade and keyguard surfaces opaque for stable QS animation.
+PRODUCT_PROPERTY_OVERRIDES += persist.sysui.disableBlur=true
