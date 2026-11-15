@@ -36,7 +36,7 @@ TARGET_SCREEN_HEIGHT := 1600
 TARGET_SCREEN_WIDTH := 720
 
 # Combined vendor repo: the a42xq blob namespace is nested inside sm7225-common
-PRODUCT_SOONG_NAMESPACES += vendor/samsung/sm7225-common/a42xq
+PRODUCT_SOONG_NAMESPACES += vendor/samsung/a42xq
 
 ## Device identifier. This must come after all inclusions
 PRODUCT_NAME := lineage_a42xq
