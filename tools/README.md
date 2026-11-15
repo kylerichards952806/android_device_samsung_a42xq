@@ -53,7 +53,9 @@ device/samsung/a42xq/tools/build-and-release.sh --notes-file notes-20261115.md
 
 Set `JOBS=4` to override the build job count.
 
-The local WSL script `/root/android/build-j25.sh` is also wired to publish after
-`m bacon -j2` succeeds. It uses `/root/gcm-helper.sh` when no token is exported,
-and reads the XDA release post from `/mnt/c/a42/release-post-a42xq-24.0.md` by
-default. Override that path with `RELEASE_POST=/path/to/post.md`.
+The local WSL scripts `/root/android/build-j25.sh`, `run-build-j2.sh`,
+`run-build-j4.sh` and `run-build-j6.sh` are wired through
+`/root/android/publish-after-build.sh` to publish after a successful build. They
+use `/root/gcm-helper.sh` when no token is exported, and read the XDA release
+post from `/mnt/c/a42/release-post-a42xq-24.0.md` by default. Override that path
+with `RELEASE_POST=/path/to/post.md`.
