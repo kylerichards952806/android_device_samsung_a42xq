@@ -8,9 +8,10 @@ It refuses to publish unless the OTA certificate inside the zip matches the curr
 
 * Python 3
 * `openssl`
-* `GITHUB_TOKEN` or `GH_TOKEN` with `repo` (or `public_repo`) scope
+* `GITHUB_TOKEN` or `GH_TOKEN` with `repo` (or `public_repo`) scope, or a Git
+  credential helper that can return the GitHub token
 
-Never commit the token. Export it in the shell or provide it through your secret manager.
+Never commit the token. Export it in the shell or provide it through your secret manager. If no token is exported, pass `--credential-helper /root/gcm-helper.sh` (the WSL build script does this automatically).
 
 ## After a successful build
 
@@ -51,3 +52,8 @@ device/samsung/a42xq/tools/build-and-release.sh --notes-file notes-20261115.md
 ```
 
 Set `JOBS=4` to override the build job count.
+
+The local WSL script `/root/android/build-j25.sh` is also wired to publish after
+`m bacon -j2` succeeds. It uses `/root/gcm-helper.sh` when no token is exported,
+and reads the XDA release post from `/mnt/c/a42/release-post-a42xq-24.0.md` by
+default. Override that path with `RELEASE_POST=/path/to/post.md`.

@@ -50,6 +50,8 @@ def parse_args():
     parser.add_argument("--tag", help="release tag; defaults to lineage-24.0-<version>")
     parser.add_argument("--title", help="release title")
     parser.add_argument("--target", default="lineage-24.0", help="release target branch")
+    parser.add_argument("--credential-helper", type=Path,
+                        help="git credential helper for github.com when GITHUB_TOKEN/GH_TOKEN is unset")
     parser.add_argument("--notes", help="release changelog text")
     parser.add_argument("--notes-file", type=Path, help="file containing the changelog")
     parser.add_argument("--release-post", type=Path,
@@ -195,7 +197,9 @@ def notes_from_post(path, version):
     text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
     start = text.find(marker)
     if start < 0:
-        raise SystemExit("no %s section in %s" % (marker, path))
+        print("warning: no %s section in %s; using the cumulative changelog" % (marker, path),
+              file=sys.stderr)
+        return None
     body = text[start + len(marker):]
     end = len(body)
     for heading in ("\n**Changelog —", "\n**LineageOS changes**", "\n**Installation**",
@@ -232,11 +236,31 @@ This build is signed with the current private a42xq release key.
 """ % (pretty_date, notes, zip_path.name, "{:,}".format(size), digest, changelog_url)
 
 
-def credential():
+def credential(helper=None):
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
-    if not token:
-        raise SystemExit("set GITHUB_TOKEN or GH_TOKEN to a token with repo/public_repo scope")
-    return token
+    if token:
+        return token
+    if helper:
+        helper = Path(helper)
+        if not helper.is_file():
+            raise SystemExit("credential helper not found: " + str(helper))
+        result = subprocess.run(
+            [str(helper), "get"],
+            input="protocol=https\nhost=github.com\n\n",
+            text=True,
+            capture_output=True,
+            check=True,
+            env={**os.environ, "GCM_INTERACTIVE": "never"},
+        )
+        for line in result.stdout.splitlines():
+            if line.startswith("password="):
+                token = line.split("=", 1)[1].strip()
+                break
+        if token:
+            return token
+    raise SystemExit(
+        "set GITHUB_TOKEN or GH_TOKEN, or pass --credential-helper"
+    )
 
 
 def api(method, path, token, payload=None):
@@ -348,7 +372,7 @@ def main():
         }, indent=2))
         return
 
-    token = credential()
+    token = credential(args.credential_helper)
     status, repo = api("GET", "/repos/" + args.repo, token)
     if status != 200:
         raise SystemExit("cannot read repo: %s %s" % (status, repo.get("message")))
