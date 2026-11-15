@@ -12,11 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/lineage_a42xq.mk
+    $(LOCAL_DIR)/lineage_a42xq.mk \
+    $(LOCAL_DIR)/infinity_a42xq.mk
 
 COMMON_LUNCH_CHOICES := \
     lineage_a42xq-userdebug \
     lineage_a42xq-user \
-    lineage_a42xq-eng
+    lineage_a42xq-eng \
+    infinity_a42xq-user \
+    infinity_a42xq-userdebug \
+    infinity_a42xq-eng
