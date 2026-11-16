@@ -78,3 +78,13 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 # "Phone is starting" screen / blank home after unlock).
 PRODUCT_PACKAGES += \
     Launcher3QuickStep
+
+# AudioFX is gated behind this board flag in
+# vendor/infinity/config/common_mobile_full.mk.
+TARGET_INCLUDES_AUDIOFX := true
+
+# Dolby Atmos: hardware/samsung/packages/Dap ships org.lineageos.dap, which
+# registers a com.android.settings.action.IA_SETTINGS activity (Settings > Sound
+# > Dolby Atmos). Nothing in the product included it.
+PRODUCT_PACKAGES += \
+    SamsungDAP
