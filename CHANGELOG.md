@@ -1,3 +1,9 @@
+## 16 Nov 2026 — Play services fallback
+
+### Fixes
+
+* a42xq: ship Google Play services (`com.google.android.gms`) as a privileged app. GAPPS builds carry the GMS APEX (`com.google.android.gmssystem.prodvic.apex`) in the payload, but apexd never activates the Google APEXes on this device, so `com.google.android.gms` was never installed and Play Store died with `SecurityException: Failed to find provider com.google.android.gsf.gservices`. The APK extracted from that APEX (26.11.36) now installs to `/system/priv-app/PrebuiltGmsCore` together with its privapp allowlist and preinstalled-packages sysconfig. The 217 MB APK is tracked with Git LFS.
+
 ## 16 Nov 2026 — GAPPS boot loop fix
 
 ### Fixes

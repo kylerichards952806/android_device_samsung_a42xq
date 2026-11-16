@@ -46,3 +46,18 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilts/extservices/privapp_allowlist_com.google.android.ext.services.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.ext.services.xml \
     $(LOCAL_PATH)/prebuilts/apexkeys/com.android.extservices.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.android.extservices.avbpubkey \
     $(LOCAL_PATH)/prebuilts/apexkeys/com.google.android.gmssystem.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.google.android.gmssystem.avbpubkey
+
+# Google Play services fallback. The GMS APEX (com.google.android.gmssystem.prodvic.apex)
+# is copied to /system/apex by vendor/pixel/gms, but apexd never activates it on
+# this device, so com.google.android.gms was missing entirely and Play Store
+# crashed with "Failed to find provider com.google.android.gsf.gservices".
+# Ship the APK extracted from that APEX (26.11.36) as a privileged app. If
+# apexd ever starts mounting the APEX, drop this copy to avoid a duplicate.
+# GitHub rejects files over 100 MB and blocks LFS on public forks, so the APK
+# is committed as prebuilts/gms/PrebuiltGmsCore.apk.part-* and assembled here.
+GMS_ASSEMBLED := $(shell $(LOCAL_PATH)/prebuilts/gms/assemble.sh >&2)
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilts/gms/PrebuiltGmsCore.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk \
+    $(LOCAL_PATH)/prebuilts/gms/privapp_allowlist_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.gmssystem.xml \
+    $(LOCAL_PATH)/prebuilts/gms/preinstalled_packages_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/preinstalled_packages_com.google.android.gmssystem.xml

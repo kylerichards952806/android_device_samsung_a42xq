@@ -1,0 +1,12 @@
+<config>
+<!-- LINT.IfChange -->
+<!-- GMS Core (GmsCorePrebuilt) -->
+    <install-in-user-type package="com.google.android.gms">
+        <install-in user-type="SYSTEM" />
+        <install-in user-type="FULL" />
+        <install-in user-type="PROFILE" />
+    </install-in-user-type>
+<!-- LINT.ThenChange(
+/vendor/google/sdk/product/sysconfig/preinstalled-packages-google-apis-common.xml,
+/vendor/google/data/etc/sysconfig/preinstalled-packages-product-pixel-2017-and-newer.xml) -->
+</config>
