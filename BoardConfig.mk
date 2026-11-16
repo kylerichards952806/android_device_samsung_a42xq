@@ -30,3 +30,18 @@ TARGET_SCREEN_DENSITY := 300
 
 # OTA assert
 TARGET_OTA_ASSERT_DEVICE := a42xq
+
+# Dynamic partitions
+# The A42 5G super partition (/dev/block/by-name/super -> sda27) is
+# 9,017,753,600 bytes. The shared sm7225 configuration assumes
+# 10,385,096,704, which let the GAPPS system/product images grow past
+# what the device can actually hold. Pin the super and the four logical
+# partitions here so sm7225-common keeps its values for other devices.
+#   system 5,472,002,048 + vendor 1,138,327,552 + product 2,200,674,304
+#   + odm 52,510,720 = 8,863,514,624, which fits the 9,013,559,296 group.
+BOARD_SUPER_PARTITION_SIZE                 := 9017753600
+BOARD_SAMSUNG_DYNAMIC_PARTITIONS_SIZE      := 9013559296 # BOARD_SUPER_PARTITION_SIZE - 4 MiB
+BOARD_SYSTEMIMAGE_PARTITION_SIZE           := 5472002048
+BOARD_VENDORIMAGE_PARTITION_SIZE           := 1138327552
+BOARD_PRODUCTIMAGE_PARTITION_SIZE          := 2200674304
+BOARD_ODMIMAGE_PARTITION_SIZE              := 52510720
