@@ -35,3 +35,14 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml
 
 PRODUCT_PACKAGES += libshim_samsungaudioparams
+
+# Google ExtServices for GAPPS builds. The prebuilt com.google.android.extservices
+# APEX in /system/apex is not activated (apexd cannot verify it), so
+# PackageManagerService aborts system_server with "Required services extension
+# package is missing" and the device loops on the boot animation forever.
+# Ship the APK as a priv-app fallback plus the APEX public keys.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilts/extservices/GoogleExtServices.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/GoogleExtServices/GoogleExtServices.apk \
+    $(LOCAL_PATH)/prebuilts/extservices/privapp_allowlist_com.google.android.ext.services.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.ext.services.xml \
+    $(LOCAL_PATH)/prebuilts/apexkeys/com.android.extservices.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.android.extservices.avbpubkey \
+    $(LOCAL_PATH)/prebuilts/apexkeys/com.google.android.gmssystem.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.google.android.gmssystem.avbpubkey

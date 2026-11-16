@@ -1,3 +1,9 @@
+## 16 Nov 2026 — GAPPS boot loop fix
+
+### Fixes
+
+* a42xq: ship Google ExtServices (`com.google.android.ext.services`) as a privileged app. GAPPS builds carry the prebuilt `com.google.android.extservices` APEX in `/system/apex`, but apexd never activates it on this device, so `PackageManagerService` threw `Required services extension package is missing` while starting bootstrap services, `system_server` died every ~5 seconds and the device looped on the boot animation forever. The APK (extracted from the APEX) and its `privapp_allowlist` are now installed to `/system/priv-app/GoogleExtServices`, and both Google APEX public keys are copied to `/system/etc/security/apex/` so apexd can verify them if it ever can.
+
 # Infinity-X 4.2 — Samsung Galaxy A42 5G (a42xq)
 
 ## Infinity-X 4.2 — 16 November 2026
