@@ -38,6 +38,7 @@
 
 ## ROM
 
+* healthd: charging current is now reported in microamps (with a `bms/current_now` fallback), so the always-on display shows the real charging wattage instead of 0.0 W.
 * lineage-sdk: LiveDisplay no longer blocks `system_server` at boot, which previously caused a black screen after wiping data.
 * SystemUI: the fingerprint prompt message is no longer hidden behind the navigation bar.
 
