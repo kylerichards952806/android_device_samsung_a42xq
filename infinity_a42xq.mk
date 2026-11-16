@@ -72,3 +72,9 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 
 # Signing keys are picked up from vendor/infinity-priv/keys/keys.mk, which
 # vendor/infinity/config/common.mk already includes for unofficial builds.
+
+# Home app: vendor/infinity's common config pulls in no launcher, so without this
+# the rom installs with no HOME activity (system stays on FallbackHome's
+# "Phone is starting" screen / blank home after unlock).
+PRODUCT_PACKAGES += \
+    Launcher3QuickStep
