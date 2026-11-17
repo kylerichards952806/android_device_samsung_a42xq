@@ -1,3 +1,9 @@
+## 16 Nov 2026 — Drop the GMS APEX
+
+### Build
+
+* a42xq: stop installing `com.google.android.gmssystem.prodvic.apex`. Play services now ships as the `PrebuiltGmsCore` priv-app fallback, and if apexd ever activates the APEX as well the build would contain two packages named `com.google.android.gms`. `device.mk` filters the module out of `PRODUCT_PACKAGES` and `PRODUCT_COPY_FILES`, and the vendor list no longer carries the APEX entry.
+
 ## 16 Nov 2026 — Play services fallback
 
 ### Fixes

@@ -61,3 +61,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilts/gms/PrebuiltGmsCore.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk \
     $(LOCAL_PATH)/prebuilts/gms/privapp_allowlist_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.gmssystem.xml \
     $(LOCAL_PATH)/prebuilts/gms/preinstalled_packages_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/preinstalled_packages_com.google.android.gmssystem.xml
+
+# Drop the GMS APEX. Play services ships as the PrebuiltGmsCore priv-app
+# fallback above; if apexd ever starts activating com.google.android.gmssystem
+# .prodvic.apex too, two packages named com.google.android.gms would be scanned.
+PRODUCT_PACKAGES := $(filter-out com.google.android.gmssystem.prodvic,$(PRODUCT_PACKAGES))
+PRODUCT_COPY_FILES := $(filter-out %com.google.android.gmssystem.prodvic.apex%,$(PRODUCT_COPY_FILES))
