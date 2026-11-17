@@ -44,8 +44,6 @@ PRODUCT_PACKAGES += libshim_samsungaudioparams
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilts/extservices/GoogleExtServices.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/GoogleExtServices/GoogleExtServices.apk \
     $(LOCAL_PATH)/prebuilts/extservices/privapp_allowlist_com.google.android.ext.services.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.ext.services.xml \
-    $(LOCAL_PATH)/prebuilts/apexkeys/com.android.extservices.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.android.extservices.avbpubkey \
-    $(LOCAL_PATH)/prebuilts/apexkeys/com.google.android.gmssystem.avbpubkey:$(TARGET_COPY_OUT_SYSTEM)/etc/security/apex/com.google.android.gmssystem.avbpubkey
 
 # Google Play services fallback. The GMS APEX (com.google.android.gmssystem.prodvic.apex)
 # is copied to /system/apex by vendor/pixel/gms, but apexd never activates it on
@@ -67,3 +65,14 @@ PRODUCT_COPY_FILES += \
 # .prodvic.apex too, two packages named com.google.android.gms would be scanned.
 PRODUCT_PACKAGES := $(filter-out com.google.android.gmssystem.prodvic,$(PRODUCT_PACKAGES))
 PRODUCT_COPY_FILES := $(filter-out %com.google.android.gmssystem.prodvic.apex%,$(PRODUCT_COPY_FILES))
+
+# Google ExtServices ships as the priv-app APK fallback above, so drop its APEX
+# from the image too. Both Google APEXes are left inactive by apexd on this
+# device (payload is byte-identical to the prebuilt and the avbpubkey matches,
+# cause still unknown), and shipping them only risks a duplicate package.
+PRODUCT_PACKAGES := $(filter-out com.google.android.extservices,$(PRODUCT_PACKAGES))
+
+# Skip Google SetupWizard. On this port it only advances after locking and
+# unlocking the screen on every page, and it leaves airplane mode enabled after
+# an offline first boot. Framework provisioning defaults are used instead.
+PRODUCT_PROPERTY_OVERRIDES += ro.setupwizard.mode=DISABLED

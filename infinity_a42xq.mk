@@ -83,8 +83,7 @@ PRODUCT_PACKAGES += \
 # vendor/infinity/config/common_mobile_full.mk.
 TARGET_INCLUDES_AUDIOFX := true
 
-# Dolby Atmos: hardware/samsung/packages/Dap ships org.lineageos.dap, which
-# registers a com.android.settings.action.IA_SETTINGS activity (Settings > Sound
-# > Dolby Atmos). Nothing in the product included it.
-PRODUCT_PACKAGES += \
-    SamsungDAP
+# Dolby Atmos: SamsungDAP is deliberately not installed. The A42 5G blob set
+# has no Dolby DAP effect library in /vendor/lib*/soundfx and no /vendor/etc
+# dolby config, so the app only exposed a switch with no effect and no
+# profiles to offer. AudioFX above is the working equalizer.
