@@ -1,4 +1,0 @@
-# The Samsung NFC HAL reads the unlabelled default_prop property area while
-# probing vendor properties. The reads fail and are retried, filling logcat
-# with harmless denials; grant read access to that property area.
-allow hal_nfc_default default_prop:file r_file_perms;
