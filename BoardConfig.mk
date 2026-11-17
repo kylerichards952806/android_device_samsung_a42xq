@@ -18,6 +18,9 @@ LOCAL_PATH := device/samsung/a42xq
 
 include device/samsung/sm7225-common/BoardConfigCommon.mk
 
+# Device-specific SELinux rules (rild diag, NFC property reads)
+BOARD_VENDOR_SEPOLICY_DIRS += $(LOCAL_PATH)/sepolicy/vendor
+
 # Kernel
 TARGET_KERNEL_CONFIG        := vendor/a42xq_eur_open_defconfig
 BOARD_NAME                  := SRPTF23D003

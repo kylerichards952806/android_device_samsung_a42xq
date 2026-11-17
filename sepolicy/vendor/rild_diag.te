@@ -1,0 +1,6 @@
+# rild opens /dev/diag for the Samsung diag interface. The qcom vendor policy
+# carries the same rule for other targets, but vendor_diag_device is not
+# allowed for rild on this device, producing repeated AVC denials from the
+# RILD/RILD2 threads. The interface works either way; allow it so the denial
+# noise stops.
+allow rild vendor_diag_device:chr_file rw_file_perms;
