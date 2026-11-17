@@ -61,6 +61,7 @@
 * `system/sepolicy`: `crash_dump` may now ptrace `vold` on user builds. Both the rule and the `-vold` exemption in the neverallow were `userdebug_or_eng` only, so `user` builds could not capture vold stacks.
 * `system/sepolicy`: `system_server` may read `binderfs_logs_transactions` on user builds, restoring binder transaction dumps for ANR and watchdog reports.
 * `system/sepolicy`: added a `dontaudit` for SystemUI reading `ro.usb.uvc.enabled`. The `appdomain` neverallow keeps that read denied by design, so only the recurring audit denial is silenced.
+* sm7225-common: the enforcing bring-up itself is device policy, not an upstream patch: 71 `.te` files, 368 `allow` rules, 39 `dontaudit` rules, 108 `file_contexts` and 104 `genfs_contexts` entries. Every Samsung blob (radio, UDFPS, tee/keymaster/gatekeeper, NFC, camera, audio, display/composer, sensors, power, thermal, WiFi, Bluetooth, DRM, health, vold, init, macloader) has its own domain and labels; there are no `permissive` domains and no catch-all allows. The rules were added deny by deny from enforcing boots and re-checked after every blob update.
 
 ### Build
 
