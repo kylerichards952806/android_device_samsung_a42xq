@@ -8,7 +8,7 @@
 
 * SELinux: 49 denials since boot, none from `system_server` or app processes. Repeats are kernel `qipcrtr_socket` creates from kworkers, `rild` on `vendor_diag_device`, `nfc@1.2-service` reading `default_prop`, and Proton Pass reading `/proc/version`. All are vendor/platform policy gaps, not functional failures.
 * `RILD`/`RILD2` `nlmsg_type = 16` and `WifiHAL` QCA `LL_STATS` attribute errors are vendor noise; telephony and WiFi work.
-* `keystore2` GC logs `UNIMPLEMENTED` when invalidating blobs; key operations succeed.
+* `keystore2` GC logs `UNIMPLEMENTED` when invalidating blobs. Expected with Infinity-X's spoofing/keybox stack; key operations and **STRONG** Play Integrity are unaffected.
 * Memory: 2 GB zram active with ~450 MB used; the OOM reaper kills background apps (Facebook, Gearhead) under 4 GB pressure. Expected, not a leak.
 * `msm_vidc: Failed to create debugfs` and `pet_watchdog` lines are harmless vendor kernel noise.
 
