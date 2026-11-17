@@ -41,8 +41,9 @@ PRODUCT_PACKAGES += libshim_samsungaudioparams
 # PackageManagerService aborts system_server with "Required services extension
 # package is missing" and the device loops on the boot animation forever.
 # Ship the APK as a priv-app fallback plus the APEX public keys.
+ifeq ($(WITH_GAPPS),true)
+PRODUCT_PACKAGES += GoogleExtServices
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilts/extservices/GoogleExtServices.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/GoogleExtServices/GoogleExtServices.apk \
     $(LOCAL_PATH)/prebuilts/extservices/privapp_allowlist_com.google.android.ext.services.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.ext.services.xml \
 
 # Google Play services fallback. The GMS APEX (com.google.android.gmssystem.prodvic.apex)
@@ -54,11 +55,13 @@ PRODUCT_COPY_FILES += \
 # GitHub rejects files over 100 MB and blocks LFS on public forks, so the APK
 # is committed as prebuilts/gms/PrebuiltGmsCore.apk.part-* and assembled here.
 GMS_ASSEMBLED := $(shell $(LOCAL_PATH)/prebuilts/gms/assemble.sh >&2)
+PRODUCT_PACKAGES += PrebuiltGmsCore
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilts/gms/PrebuiltGmsCore.apk:$(TARGET_COPY_OUT_SYSTEM)/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk \
     $(LOCAL_PATH)/prebuilts/gms/privapp_allowlist_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.gmssystem.xml \
     $(LOCAL_PATH)/prebuilts/gms/preinstalled_packages_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/preinstalled_packages_com.google.android.gmssystem.xml
+
+endif # WITH_GAPPS
 
 # Drop the GMS APEX. Play services ships as the PrebuiltGmsCore priv-app
 # fallback above; if apexd ever starts activating com.google.android.gmssystem
@@ -76,3 +79,5 @@ PRODUCT_PACKAGES := $(filter-out com.google.android.extservices,$(PRODUCT_PACKAG
 # unlocking the screen on every page, and it leaves airplane mode enabled after
 # an offline first boot. Framework provisioning defaults are used instead.
 PRODUCT_PROPERTY_OVERRIDES += ro.setupwizard.mode=DISABLED
+
+include $(LOCAL_PATH)/prebuilts/prebuilts.mk
