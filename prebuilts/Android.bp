@@ -3,6 +3,7 @@ android_app_import {
     apk: "extservices/GoogleExtServices.apk",
     filename: "GoogleExtServices.apk",
     presigned: true,
+    preprocessed: true,
     privileged: true,
     dex_preopt: {
         enabled: false,
@@ -14,6 +15,7 @@ android_app_import {
     apk: "gms/PrebuiltGmsCore.apk",
     filename: "PrebuiltGmsCore.apk",
     presigned: true,
+    preprocessed: true,
     privileged: true,
     dex_preopt: {
         enabled: false,

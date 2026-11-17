@@ -4,6 +4,7 @@
 
 * a42xq: register the device tree's Soong namespace (`PRODUCT_SOONG_NAMESPACES += device/samsung/a42xq`) and give the GMS prebuilts unique module names (`A42xqExtServices`, `A42xqGmsCore`). `PRODUCT_PACKAGES += GoogleExtServices` was resolving to the empty dummy app in `vendor/pixel/gms/dummy-apps`, whose committed `AndroidManifest.xml` is 0 bytes, so `manifest_fixer` aborted the GAPPS build with `error: no element found: line 1, column 0`.
 * a42xq: drop the `allow hal_nfc_default default_prop:file` rule from `3d16f7e`. Direct property-area access violates the `property.te` neverallows, so `sepolicy_neverallows` aborted the build in `checkpolicy` (`4 neverallow failures occurred`). The NFC HAL denial it silenced is log-only noise and the interface works without it.
+* a42xq: mark both GMS prebuilts `preprocessed: true`. Soong rejects presigned prebuilt APKs that target SDK 30+ unless they are preprocessed, because its own signing would break the v2 signature. Both APKs already pass the zipalign and uncompressed JNI/dex checks that go with the flag.
 
 ## 17 Nov 2026 — log sweep
 
