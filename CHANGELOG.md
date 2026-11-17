@@ -16,8 +16,8 @@
 
 ### Fixes
 
-* a42xq: skip Google SetupWizard (`ro.setupwizard.mode=DISABLED`). On this port it only advanced after locking and unlocking the screen on every page, and after an offline first boot it left airplane mode enabled. Framework provisioning defaults are used instead, so first boot lands on the launcher.
-* a42xq: stop installing `SamsungDAP` (Dolby Atmos). The A42 5G blob set contains no Dolby DAP effect library under `/vendor/lib*/soundfx` and no `/vendor/etc` Dolby configuration, so the app only exposed a switch that did nothing and had no profiles to select. `AudioFX` stays enabled and is the working equalizer.
+* a42xq: Google SetupWizard is **temporarily disabled** (`ro.setupwizard.mode=DISABLED`) while its page lock/unlock bug is fixed. On this port it only advanced after locking and unlocking the screen on every page, and after an offline first boot it left airplane mode enabled. Framework provisioning defaults are used instead, so first boot lands on the launcher.
+* a42xq: **Dolby Atmos is removed from this and all future builds.** The A42 5G blob set contains no Dolby DAP effect library under `/vendor/lib*/soundfx` and no `/vendor/etc` Dolby configuration, so the app only exposed a switch that did nothing and had no profiles to select. `AudioFX` stays enabled and is the working equalizer.
 * a42xq: stop installing `com.google.android.extservices.apex`. The APEX is byte-identical to the prebuilt and its avbpubkey in `/system/etc/security/apex` matches the key embedded in the file, yet apexd marks it `isActive="false"` (same for `com.google.android.gmssystem` in `/product/apex`). Until that is root-caused the priv-app APK fallbacks are the supported path, and shipping the inactive APEXes would risk a duplicate package if apexd ever activates them.
 
 ### Known issues
