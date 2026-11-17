@@ -80,4 +80,3 @@ PRODUCT_PACKAGES := $(filter-out com.google.android.extservices,$(PRODUCT_PACKAG
 # an offline first boot. Framework provisioning defaults are used instead.
 PRODUCT_PROPERTY_OVERRIDES += ro.setupwizard.mode=DISABLED
 
-include $(LOCAL_PATH)/prebuilts/prebuilts.mk
