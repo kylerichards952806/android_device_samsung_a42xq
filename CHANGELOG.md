@@ -1,3 +1,14 @@
+## 17 Nov 2026 — SetupWizard re-enabled
+
+### Fixes
+
+* a42xq: Google SetupWizard is **enabled in optional mode** (`ro.setupwizard.mode=OPTIONAL`, `e51ba12`). The page lock/unlock loop and the airplane-mode-after-an-offline-first-boot behaviour that forced `DISABLED` in the 16 Nov build no longer reproduce, so first boot runs the wizard again while users can still skip it.
+* 17 Nov zips already built: `ro.setupwizard.mode` was flipped inside `system/build.prop` with a same-length `DISABLED` -> `OPTIONAL` swap, the AVB hashtree footer regenerated, the block payload rebuilt against the existing transfer list and the package re-signed with the release key, so no full rebuild was needed to fix the shipped zips.
+
+### Notes
+
+* A device already running the 17 Nov build gets the same result without flashing: KernelSU-Next root plus `resetprop ro.setupwizard.mode OPTIONAL`, or a `post-fs-data.d` script for it to survive reboots. `setprop` itself is rejected because `ro.*` properties are read-only once init has set them, and `/system` is verity-enforcing, so a remount edit is not possible.
+
 ## 17 Nov 2026 — GAPPS prebuilt packaging fix
 
 ### Fixes
