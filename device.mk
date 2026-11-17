@@ -36,13 +36,19 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += libshim_samsungaudioparams
 
+# The device tree declares its own Soong namespace, so register it with the
+# product. Without this entry the modules in prebuilts/Android.bp are not
+# visible to PRODUCT_PACKAGES, and a name like GoogleExtServices resolves to
+# the empty dummy app in vendor/pixel/gms/dummy-apps instead.
+PRODUCT_SOONG_NAMESPACES += device/samsung/a42xq
+
 # Google ExtServices for GAPPS builds. The prebuilt com.google.android.extservices
 # APEX in /system/apex is not activated (apexd cannot verify it), so
 # PackageManagerService aborts system_server with "Required services extension
 # package is missing" and the device loops on the boot animation forever.
 # Ship the APK as a priv-app fallback plus the APEX public keys.
 ifeq ($(WITH_GAPPS),true)
-PRODUCT_PACKAGES += GoogleExtServices
+PRODUCT_PACKAGES += A42xqExtServices
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilts/extservices/privapp_allowlist_com.google.android.ext.services.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.ext.services.xml \
 
@@ -55,7 +61,7 @@ PRODUCT_COPY_FILES += \
 # GitHub rejects files over 100 MB and blocks LFS on public forks, so the APK
 # is committed as prebuilts/gms/PrebuiltGmsCore.apk.part-* and assembled here.
 GMS_ASSEMBLED := $(shell $(LOCAL_PATH)/prebuilts/gms/assemble.sh >&2)
-PRODUCT_PACKAGES += PrebuiltGmsCore
+PRODUCT_PACKAGES += A42xqGmsCore
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/prebuilts/gms/privapp_allowlist_com.google.android.gmssystem.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp_allowlist_com.google.android.gmssystem.xml \

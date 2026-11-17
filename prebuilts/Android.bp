@@ -1,6 +1,7 @@
 android_app_import {
-    name: "GoogleExtServices",
+    name: "A42xqExtServices",
     apk: "extservices/GoogleExtServices.apk",
+    filename: "GoogleExtServices.apk",
     presigned: true,
     privileged: true,
     dex_preopt: {
@@ -9,8 +10,9 @@ android_app_import {
 }
 
 android_app_import {
-    name: "PrebuiltGmsCore",
+    name: "A42xqGmsCore",
     apk: "gms/PrebuiltGmsCore.apk",
+    filename: "PrebuiltGmsCore.apk",
     presigned: true,
     privileged: true,
     dex_preopt: {

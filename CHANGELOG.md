@@ -1,3 +1,9 @@
+## 17 Nov 2026 — GAPPS prebuilt packaging fix
+
+### Fixes
+
+* a42xq: register the device tree's Soong namespace (`PRODUCT_SOONG_NAMESPACES += device/samsung/a42xq`) and give the GMS prebuilts unique module names (`A42xqExtServices`, `A42xqGmsCore`). `PRODUCT_PACKAGES += GoogleExtServices` was resolving to the empty dummy app in `vendor/pixel/gms/dummy-apps`, whose committed `AndroidManifest.xml` is 0 bytes, so `manifest_fixer` aborted the GAPPS build with `error: no element found: line 1, column 0`.
+
 ## 17 Nov 2026 — log sweep
 
 ### Fixes
