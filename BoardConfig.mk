@@ -45,9 +45,12 @@ TARGET_OTA_ASSERT_DEVICE := a42xq
 BOARD_SUPER_PARTITION_SIZE                 := 9017753600
 BOARD_SAMSUNG_DYNAMIC_PARTITIONS_SIZE      := 9013559296 # BOARD_SUPER_PARTITION_SIZE - 4 MiB
 BOARD_SYSTEMIMAGE_PARTITION_SIZE           := 5472002048
-# sm7225-common still defines a reserved size for the shared tree; the
-# explicit size above replaces it and the build rejects both.
+# sm7225-common still defines reserved sizes for the shared tree; the
+# explicit sizes above replace them and the build rejects having both.
 BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE   :=
+BOARD_VENDORIMAGE_PARTITION_RESERVED_SIZE   :=
+BOARD_PRODUCTIMAGE_PARTITION_RESERVED_SIZE  :=
+BOARD_ODMIMAGE_PARTITION_RESERVED_SIZE      :=
 BOARD_VENDORIMAGE_PARTITION_SIZE           := 1138327552
 BOARD_PRODUCTIMAGE_PARTITION_SIZE          := 2200674304
 BOARD_ODMIMAGE_PARTITION_SIZE              := 52510720
