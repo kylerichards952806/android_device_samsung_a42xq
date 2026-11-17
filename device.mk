@@ -81,8 +81,7 @@ PRODUCT_COPY_FILES := $(filter-out %com.google.android.gmssystem.prodvic.apex%,$
 # cause still unknown), and shipping them only risks a duplicate package.
 PRODUCT_PACKAGES := $(filter-out com.google.android.extservices,$(PRODUCT_PACKAGES))
 
-# Skip Google SetupWizard. On this port it only advances after locking and
-# unlocking the screen on every page, and it leaves airplane mode enabled after
-# an offline first boot. Framework provisioning defaults are used instead.
-PRODUCT_PROPERTY_OVERRIDES += ro.setupwizard.mode=DISABLED
+# Google SetupWizard is enabled in optional mode: it now advances normally on
+# this port, so first boot runs the wizard like a stock GApps build.
+PRODUCT_PROPERTY_OVERRIDES += ro.setupwizard.mode=OPTIONAL
 
