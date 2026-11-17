@@ -1,3 +1,17 @@
+## 17 Nov 2026 — log sweep
+
+### Fixes
+
+* kernel: enable `CONFIG_F2FS_FS_VERITY` and `CONFIG_EXT4_FS_VERITY`. `/data` is f2fs, but only the generic `CONFIG_FS_VERITY` was on, so every fs-verity ioctl returned `ENOTSUP`. Android 17 retries on every atomic settings write and logged `ResilientAtomicFile: Failed to verity-protect ... Operation not supported on transport endpoint` 1082 times plus 240 `AccessPersistence` failures in a single boot. Needs the next kernel build.
+
+### Diagnostics
+
+* SELinux: 49 denials since boot, none from `system_server` or app processes. Repeats are kernel `qipcrtr_socket` creates from kworkers, `rild` on `vendor_diag_device`, `nfc@1.2-service` reading `default_prop`, and Proton Pass reading `/proc/version`. All are vendor/platform policy gaps, not functional failures.
+* `RILD`/`RILD2` `nlmsg_type = 16` and `WifiHAL` QCA `LL_STATS` attribute errors are vendor noise; telephony and WiFi work.
+* `keystore2` GC logs `UNIMPLEMENTED` when invalidating blobs; key operations succeed.
+* Memory: 2 GB zram active with ~450 MB used; the OOM reaper kills background apps (Facebook, Gearhead) under 4 GB pressure. Expected, not a leak.
+* `msm_vidc: Failed to create debugfs` and `pet_watchdog` lines are harmless vendor kernel noise.
+
 ## 17 Nov 2026 — first-boot and Dolby cleanup
 
 ### Fixes
