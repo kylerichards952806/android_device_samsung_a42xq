@@ -31,13 +31,11 @@ WITH_GAPPS ?= true
 INFINITY_MAINTAINER := kyler084
 TARGET_HAS_UDFPS := true
 
+# Values that contain spaces live in product.prop: PRODUCT_PRODUCT_PROPERTIES
+# splits its entries on whitespace, which truncated every one of them at the
+# first space (ro.infinity.camera became "48MP", marketname "Galaxy").
 PRODUCT_PRODUCT_PROPERTIES += \
-    ro.product.marketname=Galaxy A42 5G \
-    ro.infinity.codename=a42xq \
-    ro.infinity.soc=Snapdragon 750G \
-    ro.infinity.display=720 x 1600, 60 Hz \
-    ro.infinity.battery=5000 mAh \
-    ro.infinity.camera=48MP + 8MP + 5MP + 5MP
+    ro.infinity.codename=a42xq
 
 # Inherit common Infinity-X stuff
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
