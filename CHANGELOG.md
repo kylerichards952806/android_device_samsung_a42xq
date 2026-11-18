@@ -1,13 +1,13 @@
-## 18 Nov 2026 — screen-off UDFPS, 3.5 mm jack, UDFPS HBM and About phone
+## 18 Nov 2026 — 3.5 mm jack, UDFPS HBM, About phone and GPS
 
 ### Builds
 
 * GAPPS `18.11.2026` built at 12:45 (2,505,495,553 bytes, md5 `a7f6fd45ee26cf1846fbea48193d9f86`); zero failures.
-* VANILLA `18.11.2026` build was stopped during its plan regeneration and will be restarted.
+* VANILLA `18.11.2026` restarted at 13:14 after the release post review.
 
 ### Fixes
 
-* kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`93d9c4a`). The `org.lineageos.sensor.udfps` subhal polls that node, so without the notification the poll never woke while the panel was off and a finger on the sensor did nothing until the screen was turned back on. Screen-off and AOD fingerprint unlock work again.
+* kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`93d9c4a`), so the `org.lineageos.sensor.udfps` subhal poll is woken on FOD events. The notification alone does not fix screen-off/AOD unlock: on hardware testing the sensor still does not initialise or light up while the panel is off, though screen-on UDFPS is unaffected. Open for the next build.
 * kernel: `ss_panel_on_post()` clears `finger_mask_hbm_on` and cancels the HBM watchdog (`93d9c4a`). An unlock finishes in panel on, so the UDFPS mask-off event never arrives; the mask stayed set and `ss_brightness_dcs()` ignored every normal brightness update, which is why the slider did nothing and the panel stayed at full brightness after unlocking.
 * common: allow `hal_audio_default` to read `sysfs_audio_writable` (`de1afba`). The earjack `state` node was labelled in `genfs_contexts` but never granted to any domain, so the Samsung audio HAL got `EACCES` reading `/sys/class/audio/earjack/state` and never saw the 3.5 mm jack being plugged in.
 * a42xq: move the space-separated hardware strings into `product.prop` (`dc8bf90`). `PRODUCT_PRODUCT_PROPERTIES` splits its entries on whitespace, so About phone showed `48MP` and the device name `Galaxy`; the full `48MP + 8MP + 5MP + 5MP`, `Snapdragon 750G`, `720 x 1600, 60 Hz`, `5000 mAh` and `Galaxy A42 5G` values now land in `/product/etc/build.prop` through `TARGET_PRODUCT_PROP`.
