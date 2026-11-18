@@ -1,5 +1,10 @@
 ## 18 Nov 2026 — screen-off UDFPS, 3.5 mm jack, UDFPS HBM and About phone
 
+### Builds
+
+* GAPPS `18.11.2026` built at 12:45 (2,505,495,553 bytes, md5 `a7f6fd45ee26cf1846fbea48193d9f86`); zero failures.
+* VANILLA `18.11.2026` build was stopped during its plan regeneration and will be restarted.
+
 ### Fixes
 
 * kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`93d9c4a`). The `org.lineageos.sensor.udfps` subhal polls that node, so without the notification the poll never woke while the panel was off and a finger on the sensor did nothing until the screen was turned back on. Screen-off and AOD fingerprint unlock work again.
@@ -14,6 +19,12 @@
 * Verified on the device: after enabling A-GPS the GNSS engine fixed in under 50 s with 15 satellites, 7.6 m horizontal accuracy (3.5 m fused), and Maps received 255 locations over about five minutes. Before the change the same request ran for 55 s with no fix at all while the phone sat at the same spot.
 * The remaining Samsung GNSS log lines are benign on this port: `secGpsCb hasn't been set yet` (no Samsung framework client registers the secgps callback), `setGpsBatteryFlag() : file open error` (no `battery/gps` sysfs node on this kernel), `loc_read_sec_gps_conf: no secgps conf file` (Samsung never shipped one for this model) and the `RF_LOSS_*` warning (`gps.conf` ships every `RF_LOSS_*` key as 0). None of them block a fix.
 * `xtra-daemon` needs no init service: `loc_launcher` (`init.qcom.rc`) reads `/vendor/etc/izat.conf` and forks `xtra-daemon` with no arguments as `gps` in `u:r:vendor_location:s0`, and it is running on this build. All its prerequisites are present (`izat.conf`, `xtra_root_cert.pem`, `/data/vendor/location`), and the empty supplementary group list is harmless because the kernel is built without `CONFIG_ANDROID_PARANOID_NETWORK`.
+
+### Log sweep
+
+* No app crashes, ANRs or `system_server` restarts on the current boot: `logcat -b crash` is empty, the events buffer has no `am_crash`/`am_anr`/`am_low_memory`, and dropbox has no entries.
+* common: the `dex2oat` -> `privapp_data_file` denial cannot be fixed in policy. `system/sepolicy/private/domain.te` neverallows every `dir` permission on `privapp_data_file`, so the allow added in `5dc1d38` failed `sepolicy_neverallows` and aborted the build at the policydb step; it is reverted in `d014cd2`, with the file kept comment-only so the policy glob does not change. dexopt falls back to a profile-less compile and the AVC is log-only.
+* Reviewed and left alone as benign: `WifiHAL: nl_recvmsgs failed: -5` plus `WifiStaIfaceAidlImpl: getLinkLayerStats failed (code 7)` (the WLAN driver does not export `LL_STATS_IFACE_INFO_TS_DUTY_CYCLE`; statistics only), `RILC: secOemNoti ... mSehBridgeIndication == NULL` / `QC-DS-LIB: No Registered Clients` (Samsung's SEH bridge has no AOSP client), the Samsung GNSS lines (`secGpsCb`, `secgps.conf`, `battery/gps`) and `system_server: No package ID 7f found` (GMS resources referenced from a framework config).
 
 ### Performance
 
