@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AOSP defaults assisted_gps_enabled to false. On a GMS install the Google
+         Location Accuracy toggle normally writes 1, but if that never runs the
+         setting stays 0 and GnssLocationProvider disables SUPL and xtra-daemon,
+         leaving the device with slow standalone-only fixes. Default it on. -->
+    <bool name="assisted_gps_enabled">true</bool>
+</resources>

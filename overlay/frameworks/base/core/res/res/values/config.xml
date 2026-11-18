@@ -50,4 +50,12 @@
 
     <!-- Type of the udfps long press sensor. Empty if long press is not supported. -->
     <string name="config_dozeUdfpsLongPressSensorType" translatable="false">org.lineageos.sensor.udfps</string>
+
+    <!-- GNSS parameters. gps.conf ships SUPL_HOST/SUPL_PORT commented out, so without
+         these overrides GnssLocationProvider.setSuplHostPort() has no server to give
+         the HAL and A-GPS silently degrades to standalone-only positioning. -->
+    <string-array name="config_gnssParameters" translatable="false">
+        <item>SUPL_HOST=supl.google.com</item>
+        <item>SUPL_PORT=7275</item>
+    </string-array>
 </resources>
