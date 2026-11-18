@@ -1,5 +1,11 @@
 ## 18 Nov 2026 — 3.5 mm jack, UDFPS HBM, About phone and GPS
 
+### Next build (pending)
+
+* a42xq: merge `device/samsung/a42xq/product.prop`. `TARGET_PRODUCT_PROP` only carries `sm7225-common/product.prop`, so `ro.product.marketname`, `ro.infinity.soc`, `ro.infinity.battery` and `ro.infinity.camera` never reached `/product/etc/build.prop`. About phone therefore shows `SM7225`, `Unknown` for the battery and `Multi-Lens Module` for the camera. Add `TARGET_PRODUCT_PROP += $(LOCAL_PATH)/product.prop` to the product makefile.
+* a42xq: set `ro.infinity.soc=Snapdragon 750G 5G`, `ro.infinity.battery=5000 mAh`, `ro.infinity.camera=48MP + 8MP + 5MP + 5MP`, `ro.product.marketname=Galaxy A42 5G` and `ro.infinity.device=A42XQ`, so the About page header reads `Galaxy A42 5G (A42XQ)` instead of `SM-A426B (a42xq)`.
+* kernel/sensor: screen-off and AOD UDFPS still never initialises or lights up. The `sysfs_notify()` on `scrub_pos` alone is not enough; trace the `org.lineageos.sensor.udfps` subhal activation path and the touchscreen power state while the panel is off.
+
 ### Builds
 
 * GAPPS `18.11.2026` built at 12:45 (2,505,495,553 bytes, md5 `a7f6fd45ee26cf1846fbea48193d9f86`); zero failures.
