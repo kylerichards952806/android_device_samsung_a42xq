@@ -6,6 +6,13 @@
 * kernel: `ss_panel_on_post()` clears `finger_mask_hbm_on` and cancels the HBM watchdog (`93d9c4a`). An unlock finishes in panel on, so the UDFPS mask-off event never arrives; the mask stayed set and `ss_brightness_dcs()` ignored every normal brightness update, which is why the slider did nothing and the panel stayed at full brightness after unlocking.
 * common: allow `hal_audio_default` to read `sysfs_audio_writable` (`de1afba`). The earjack `state` node was labelled in `genfs_contexts` but never granted to any domain, so the Samsung audio HAL got `EACCES` reading `/sys/class/audio/earjack/state` and never saw the 3.5 mm jack being plugged in.
 * a42xq: move the space-separated hardware strings into `product.prop` (`dc8bf90`). `PRODUCT_PRODUCT_PROPERTIES` splits its entries on whitespace, so About phone showed `48MP` and the device name `Galaxy`; the full `48MP + 8MP + 5MP + 5MP`, `Snapdragon 750G`, `720 x 1600, 60 Hz`, `5000 mAh` and `Galaxy A42 5G` values now land in `/product/etc/build.prop` through `TARGET_PRODUCT_PROP`.
+* a42xq: default `assisted_gps_enabled` to `true` in a SettingsProvider overlay. AOSP ships the default as `false`; on a GMS install the Google Location Accuracy toggle is what writes `1`, and where that toggle never runs `GnssLocationProvider` keeps A-GPS off entirely - `getSuplMode()` returns `GNSS_POSITION_MODE_STANDALONE` and `toggleXtraDaemon()` writes `persist.sys.xtra-daemon.enabled=false` (`fdb80ca`).
+* a42xq: add `config_gnssParameters` with `SUPL_HOST=supl.google.com` and `SUPL_PORT=7275`. The shipped `/vendor/etc/gps.conf` has `SUPL_HOST` commented out and `AGPS_CONFIG_INJECT = 0`, so `GnssConfiguration.getSuplHost()` returned `null`, `setSuplHostPort()` skipped `setAgpsServer()` and no build ever had a SUPL server (`fdb80ca`).
+
+### Diagnostics
+
+* Verified on the device: after enabling A-GPS the GNSS engine fixed in under 50 s with 15 satellites, 7.6 m horizontal accuracy (3.5 m fused), and Maps received 255 locations over about five minutes. Before the change the same request ran for 55 s with no fix at all while the phone sat at the same spot.
+* The remaining Samsung GNSS log lines are benign on this port: `secGpsCb hasn't been set yet` (no Samsung framework client registers the secgps callback), `setGpsBatteryFlag() : file open error` (no `battery/gps` sysfs node on this kernel), `loc_read_sec_gps_conf: no secgps conf file` (Samsung never shipped one for this model) and the `RF_LOSS_*` warning (`gps.conf` ships every `RF_LOSS_*` key as 0). None of them block a fix.
 
 ### Performance
 
