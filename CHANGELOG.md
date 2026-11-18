@@ -1,3 +1,21 @@
+## 18 Nov 2026 — screen-off UDFPS, 3.5 mm jack, UDFPS HBM and About phone
+
+### Fixes
+
+* kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`93d9c4a`). The `org.lineageos.sensor.udfps` subhal polls that node, so without the notification the poll never woke while the panel was off and a finger on the sensor did nothing until the screen was turned back on. Screen-off and AOD fingerprint unlock work again.
+* kernel: `ss_panel_on_post()` clears `finger_mask_hbm_on` and cancels the HBM watchdog (`93d9c4a`). An unlock finishes in panel on, so the UDFPS mask-off event never arrives; the mask stayed set and `ss_brightness_dcs()` ignored every normal brightness update, which is why the slider did nothing and the panel stayed at full brightness after unlocking.
+* common: allow `hal_audio_default` to read `sysfs_audio_writable` (`de1afba`). The earjack `state` node was labelled in `genfs_contexts` but never granted to any domain, so the Samsung audio HAL got `EACCES` reading `/sys/class/audio/earjack/state` and never saw the 3.5 mm jack being plugged in.
+* a42xq: move the space-separated hardware strings into `product.prop` (`dc8bf90`). `PRODUCT_PRODUCT_PROPERTIES` splits its entries on whitespace, so About phone showed `48MP` and the device name `Galaxy`; the full `48MP + 8MP + 5MP + 5MP`, `Snapdragon 750G`, `720 x 1600, 60 Hz`, `5000 mAh` and `Galaxy A42 5G` values now land in `/product/etc/build.prop` through `TARGET_PRODUCT_PROP`.
+
+### Performance
+
+* common: zram-only swap tuning in `init.qcom.post_boot.sh` (`de1afba`): `vm.swappiness=100`, `vm.page-cluster=0`, `vm.vfs_cache_pressure=60`. zram is the only swap device on this platform, so reclaim should target it and fault-around should read one 4 KB page instead of a 128 KB cluster.
+
+### Known issues
+
+* The 17 Nov zips predate all of the above; they need the next build.
+* The a42xq vendor blob repository is still private, so a complete build needs access to it in addition to the four public trees.
+
 ## 17 Nov 2026 — SetupWizard re-enabled
 
 ### Fixes
