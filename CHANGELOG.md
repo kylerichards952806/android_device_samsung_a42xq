@@ -5,7 +5,7 @@
 * a42xq: merge `device/samsung/a42xq/product.prop` explicitly through `TARGET_PRODUCT_PROP` so the About phone values reach `/product/etc/build.prop`.
 * common: build the upstream `sensors.samsung` sub-HAL and register `org.lineageos.sensor.udfps` through the device `configs/sensors/hals.conf`; stop copying the stock `hals.conf` from two places.
 * sensors: port the a73xq TSP handoff into `Sensor.cpp` and remove the duplicate `ro.infinity.device` line that broke `post_process_props`.
-* kernel/display: release the UDFPS `exclusive_tx` gate from a flag captured at lock time (`79ef5e5`, `97bb6dd`). `_sde_encoder_trigger_flush()` unlocked under a second read of `finger_mask_updated`/`finger_mask`, so a down/up during the flush leaked `ex_tx_lock` and the next kickoff deadlocked against it. That was the rapid AOD-tap freeze where SurfaceFlinger waited on the composer HAL and `ScreenshotFreezer` waited behind it; the 500 ms timeout and HBM watchdog are only safety nets.
+* kernel/display: release the UDFPS `exclusive_tx` gate from a flag captured at lock time (`79ef5e5`, `97bb6dd`). `_sde_encoder_trigger_flush()` unlocked under a second read of `finger_mask_updated`/`finger_mask`, so a down/up during the flush leaked `ex_tx_lock` and the next kickoff deadlocked against it. That was the rapid AOD-tap freeze where SurfaceFlinger waited on the composer HAL and `ScreenshotFreezer` waited behind it; the 500 ms timeout and HBM watchdog are safety nets that now clear the gate only under `mutex_trylock()` (`7679f71`), so they cannot end a live holder's window.
 
 ### Builds
 
