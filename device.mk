@@ -16,6 +16,12 @@
 
 LOCAL_PATH := device/samsung/a42xq
 
+# sm7225-common sets TARGET_PRODUCT_PROP, which stops config.mk from
+# picking up $(TARGET_DEVICE_DIR)/product.prop automatically. Merge the
+# device file explicitly so the space-containing About phone values
+# reach /product/etc/build.prop.
+TARGET_PRODUCT_PROP += $(LOCAL_PATH)/product.prop
+
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay \
     $(LOCAL_PATH)/overlay-lineage

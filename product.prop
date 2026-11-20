@@ -1,7 +1,7 @@
 # Merged into /product/etc/build.prop through TARGET_PRODUCT_PROP.
 # Read by Settings > About phone (AboutPhoneData.java).
 ro.product.marketname=Galaxy A42 5G
-ro.infinity.soc=Snapdragon 750G
+ro.infinity.soc=Snapdragon 750G 5G
 ro.infinity.display=720 x 1600, 60 Hz
 ro.infinity.battery=5000 mAh
-ro.infinity.camera=48MP + 8MP + 5MP + 5MP
+ro.infinity.camera=48mp + 8mp + 5mp + 5mp
