@@ -1,10 +1,23 @@
+## 19 Nov 2026 — About phone values, UDFPS sensor HAL, AOD freeze fix
+
+### Fixes
+
+* a42xq: merge `device/samsung/a42xq/product.prop` explicitly through `TARGET_PRODUCT_PROP` so the About phone values reach `/product/etc/build.prop`.
+* common: build the upstream `sensors.samsung` sub-HAL and register `org.lineageos.sensor.udfps` through the device `configs/sensors/hals.conf`; stop copying the stock `hals.conf` from two places.
+* sensors: port the a73xq TSP handoff into `Sensor.cpp` and remove the duplicate `ro.infinity.device` line that broke `post_process_props`.
+* kernel/display: bound the UDFPS `exclusive_tx` frame-update gate to 500 ms and force-release a stale gate; the FOD HBM watchdog also releases it. This fixes the rapid AOD-tap freeze where SurfaceFlinger waited on the composer HAL and `ScreenshotFreezer` waited behind it.
+
+### Builds
+
+* GAPPS: `Project_Infinity-X-4.2-a42xq-19.11.2026-GAPPS-UNOFFICIAL.zip` — 2.33 GiB — md5 `3cd57a354759f8c6e39c66544f18a71c`; [Google Drive](https://drive.google.com/file/d/1QheJq9cZ13NKmmhwviERuDCzpV-G25A0/view?usp=sharing).
+* VANILLA: `Project_Infinity-X-4.2-a42xq-19.11.2026-VANILLA-UNOFFICIAL.zip` — 1.62 GiB — md5 `4eb5250953646c9e7609685d38359bb9`; [GitHub release](https://github.com/kylerichards952806/infinity_x_a42xq/releases/download/infinity-x-4.2-19.11.2026/Project_Infinity-X-4.2-a42xq-19.11.2026-VANILLA-UNOFFICIAL.zip).
+
+### Known issues
+
+* Screen-off / AOD UDFPS: the sensor HAL and display-driver freeze fix are in this build. Verify rapid AOD taps on device; if the panel still freezes, capture `dmesg` and `logcat`.
+* The a42xq vendor blob repository is still private, so a complete build needs access to it.
+
 ## 18 Nov 2026 — 3.5 mm jack, UDFPS HBM, About phone and GPS
-
-### Next build (pending)
-
-* a42xq: merge `device/samsung/a42xq/product.prop`. `TARGET_PRODUCT_PROP` only carries `sm7225-common/product.prop`, so `ro.product.marketname`, `ro.infinity.soc`, `ro.infinity.battery` and `ro.infinity.camera` never reached `/product/etc/build.prop`. About phone therefore shows `SM7225`, `Unknown` for the battery and `Multi-Lens Module` for the camera. Add `TARGET_PRODUCT_PROP += $(LOCAL_PATH)/product.prop` to the product makefile.
-* a42xq: set `ro.infinity.soc=Snapdragon 750G 5G`, `ro.infinity.battery=5000 mAh`, `ro.infinity.camera=48MP + 8MP + 5MP + 5MP`, `ro.product.marketname=Galaxy A42 5G` and `ro.infinity.device=A42XQ`, so the About page header reads `Galaxy A42 5G (A42XQ)` instead of `SM-A426B (a42xq)`.
-* kernel/sensor: screen-off and AOD UDFPS still never initialises or lights up. The `sysfs_notify()` on `scrub_pos` alone is not enough; trace the `org.lineageos.sensor.udfps` subhal activation path and the touchscreen power state while the panel is off.
 
 ### Builds
 
@@ -13,12 +26,12 @@
 
 ### Fixes
 
-* kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`93d9c4a`), so the `org.lineageos.sensor.udfps` subhal poll is woken on FOD events. The notification alone does not fix screen-off/AOD unlock: on hardware testing the sensor still does not initialise or light up while the panel is off, though screen-on UDFPS is unaffected. Open for the next build.
-* kernel: `ss_panel_on_post()` clears `finger_mask_hbm_on` and cancels the HBM watchdog (`93d9c4a`). An unlock finishes in panel on, so the UDFPS mask-off event never arrives; the mask stayed set and `ss_brightness_dcs()` ignored every normal brightness update, which is why the slider did nothing and the panel stayed at full brightness after unlocking.
-* common: allow `hal_audio_default` to read `sysfs_audio_writable` (`de1afba`). The earjack `state` node was labelled in `genfs_contexts` but never granted to any domain, so the Samsung audio HAL got `EACCES` reading `/sys/class/audio/earjack/state` and never saw the 3.5 mm jack being plugged in.
-* a42xq: move the space-separated hardware strings into `product.prop` (`dc8bf90`). `PRODUCT_PRODUCT_PROPERTIES` splits its entries on whitespace, so About phone showed `48MP` and the device name `Galaxy`; the full `48MP + 8MP + 5MP + 5MP`, `Snapdragon 750G`, `720 x 1600, 60 Hz`, `5000 mAh` and `Galaxy A42 5G` values now land in `/product/etc/build.prop` through `TARGET_PRODUCT_PROP`.
-* a42xq: default `assisted_gps_enabled` to `true` in a SettingsProvider overlay. AOSP ships the default as `false`; on a GMS install the Google Location Accuracy toggle is what writes `1`, and where that toggle never runs `GnssLocationProvider` keeps A-GPS off entirely - `getSuplMode()` returns `GNSS_POSITION_MODE_STANDALONE` and `toggleXtraDaemon()` writes `persist.sys.xtra-daemon.enabled=false` (`fdb80ca`). That property is a legacy QTI hook nothing here reads - no blob in the vendor tree references it, and `xtra-daemon` is forked by `loc_launcher` from `izat.conf` (`PROCESS_STATE=ENABLED`, empty `PROCESS_ARGUMENT`) either way - so the real effect of the setting on this stack is the SUPL mode.
-* a42xq: add `config_gnssParameters` with `SUPL_HOST=supl.google.com` and `SUPL_PORT=7275`. The shipped `/vendor/etc/gps.conf` has `SUPL_HOST` commented out and `AGPS_CONFIG_INJECT = 0`, so `GnssConfiguration.getSuplHost()` returned `null`, `setSuplHostPort()` skipped `setAgpsServer()` and no build ever had a SUPL server (`fdb80ca`).
+* kernel: `zt_ts_fod_event_report()` now calls `sysfs_notify()` on `/sys/class/sec/tsp/scrub_pos` (`6aba8d7`), so the `org.lineageos.sensor.udfps` subhal poll is woken on FOD events. The notification alone does not fix screen-off/AOD unlock: on hardware testing the sensor still does not initialise or light up while the panel is off, though screen-on UDFPS is unaffected. Open for the next build.
+* kernel: `ss_panel_on_post()` clears `finger_mask_hbm_on` and cancels the HBM watchdog (`6aba8d7`). An unlock finishes in panel on, so the UDFPS mask-off event never arrives; the mask stayed set and `ss_brightness_dcs()` ignored every normal brightness update, which is why the slider did nothing and the panel stayed at full brightness after unlocking.
+* common: allow `hal_audio_default` to read `sysfs_audio_writable` (`1075152`). The earjack `state` node was labelled in `genfs_contexts` but never granted to any domain, so the Samsung audio HAL got `EACCES` reading `/sys/class/audio/earjack/state` and never saw the 3.5 mm jack being plugged in.
+* a42xq: move the space-separated hardware strings into `product.prop` (`8af4de3`). `PRODUCT_PRODUCT_PROPERTIES` splits its entries on whitespace, so About phone showed `48MP` and the device name `Galaxy`; the full `48MP + 8MP + 5MP + 5MP`, `Snapdragon 750G`, `720 x 1600, 60 Hz`, `5000 mAh` and `Galaxy A42 5G` values now land in `/product/etc/build.prop` through `TARGET_PRODUCT_PROP`.
+* a42xq: default `assisted_gps_enabled` to `true` in a SettingsProvider overlay. AOSP ships the default as `false`; on a GMS install the Google Location Accuracy toggle is what writes `1`, and where that toggle never runs `GnssLocationProvider` keeps A-GPS off entirely - `getSuplMode()` returns `GNSS_POSITION_MODE_STANDALONE` and `toggleXtraDaemon()` writes `persist.sys.xtra-daemon.enabled=false` (`d883065`). That property is a legacy QTI hook nothing here reads - no blob in the vendor tree references it, and `xtra-daemon` is forked by `loc_launcher` from `izat.conf` (`PROCESS_STATE=ENABLED`, empty `PROCESS_ARGUMENT`) either way - so the real effect of the setting on this stack is the SUPL mode.
+* a42xq: add `config_gnssParameters` with `SUPL_HOST=supl.google.com` and `SUPL_PORT=7275`. The shipped `/vendor/etc/gps.conf` has `SUPL_HOST` commented out and `AGPS_CONFIG_INJECT = 0`, so `GnssConfiguration.getSuplHost()` returned `null`, `setSuplHostPort()` skipped `setAgpsServer()` and no build ever had a SUPL server (`d883065`).
 
 ### Diagnostics
 
@@ -29,12 +42,12 @@
 ### Log sweep
 
 * No app crashes, ANRs or `system_server` restarts on the current boot: `logcat -b crash` is empty, the events buffer has no `am_crash`/`am_anr`/`am_low_memory`, and dropbox has no entries.
-* common: the `dex2oat` -> `privapp_data_file` denial cannot be fixed in policy. `system/sepolicy/private/domain.te` neverallows every `dir` permission on `privapp_data_file`, so the allow added in `5dc1d38` failed `sepolicy_neverallows` and aborted the build at the policydb step; it is reverted in `d014cd2`, with the file kept comment-only so the policy glob does not change. dexopt falls back to a profile-less compile and the AVC is log-only.
+* common: the `dex2oat` -> `privapp_data_file` denial cannot be fixed in policy. `system/sepolicy/private/domain.te` neverallows every `dir` permission on `privapp_data_file`, so the allow added in `3f03021` failed `sepolicy_neverallows` and aborted the build at the policydb step; it is reverted in `2d94f53`, with the file kept comment-only so the policy glob does not change. dexopt falls back to a profile-less compile and the AVC is log-only.
 * Reviewed and left alone as benign: `WifiHAL: nl_recvmsgs failed: -5` plus `WifiStaIfaceAidlImpl: getLinkLayerStats failed (code 7)` (the WLAN driver does not export `LL_STATS_IFACE_INFO_TS_DUTY_CYCLE`; statistics only), `RILC: secOemNoti ... mSehBridgeIndication == NULL` / `QC-DS-LIB: No Registered Clients` (Samsung's SEH bridge has no AOSP client), the Samsung GNSS lines (`secGpsCb`, `secgps.conf`, `battery/gps`) and `system_server: No package ID 7f found` (GMS resources referenced from a framework config).
 
 ### Performance
 
-* common: zram-only swap tuning in `init.qcom.post_boot.sh` (`de1afba`): `vm.swappiness=100`, `vm.page-cluster=0`, `vm.vfs_cache_pressure=60`. zram is the only swap device on this platform, so reclaim should target it and fault-around should read one 4 KB page instead of a 128 KB cluster.
+* common: zram-only swap tuning in `init.qcom.post_boot.sh` (`1075152`): `vm.swappiness=100`, `vm.page-cluster=0`, `vm.vfs_cache_pressure=60`. zram is the only swap device on this platform, so reclaim should target it and fault-around should read one 4 KB page instead of a 128 KB cluster.
 
 ### Known issues
 
