@@ -7,7 +7,7 @@
 ### Builds
 
 * VANILLA: `Project_Infinity-X-4.2-a42xq-20.11.2026-VANILLA-UNOFFICIAL.zip` — 1.62 GiB (1,737,159,693 bytes) — md5 `11e5d63d11f49bfffd0d19519eb69043`; [GitHub release](https://github.com/kylerichards952806/infinity_x_a42xq/releases/download/infinity-x-4.2-20.11.2026/Project_Infinity-X-4.2-a42xq-20.11.2026-VANILLA-UNOFFICIAL.zip).
-* GAPPS: `Project_Infinity-X-4.2-a42xq-20.11.2026-GAPPS-UNOFFICIAL.zip` — 2.33 GiB (2,505,446,288 bytes) — md5 `c81105ae7457ac0f7ba2f554c63534b2`; Google Drive upload pending (the file is past GitHub's 2 GiB asset limit).
+* GAPPS: `Project_Infinity-X-4.2-a42xq-20.11.2026-GAPPS-UNOFFICIAL.zip` — 2.33 GiB (2,505,446,288 bytes) — md5 `c81105ae7457ac0f7ba2f554c63534b2`; [Google Drive](https://drive.google.com/file/d/1C6fHIwIRQ20Gc0FQeky3f168LgJxlIDT/view?usp=sharing) (the file is past GitHub's 2 GiB asset limit).
 
 ### Known issues
 
