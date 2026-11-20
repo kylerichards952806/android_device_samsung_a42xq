@@ -1,3 +1,18 @@
+## 20 Nov 2026 — 20.11 builds and the bounded exclusive-tx wait
+
+### Fixes
+
+* kernel/display: `dsi_panel_tx_cmd_set()` now waits at most 5 s for `exclusive_tx.enable` to clear (long enough for the flash-gamma and MTP holders), logs `exclusive tx timeout` when it expires, and sends the command anyway instead of parking the sender; the no-exclusive-window path still sends without waiting (`9d542b0`). This completes the 19 Nov gate fixes (`79ef5e5`, `97bb6dd`, `7679f71`).
+
+### Builds
+
+* VANILLA: `Project_Infinity-X-4.2-a42xq-20.11.2026-VANILLA-UNOFFICIAL.zip` — 1.62 GiB (1,737,159,693 bytes) — md5 `11e5d63d11f49bfffd0d19519eb69043`; [GitHub release](https://github.com/kylerichards952806/infinity_x_a42xq/releases/download/infinity-x-4.2-20.11.2026/Project_Infinity-X-4.2-a42xq-20.11.2026-VANILLA-UNOFFICIAL.zip).
+* GAPPS: `Project_Infinity-X-4.2-a42xq-20.11.2026-GAPPS-UNOFFICIAL.zip` — 2.33 GiB (2,505,446,288 bytes) — md5 `c81105ae7457ac0f7ba2f554c63534b2`; Google Drive upload pending (the file is past GitHub's 2 GiB asset limit).
+
+### Known issues
+
+* Screen-off / AOD UDFPS: the 19 Nov gate fixes, the trylock-only safety nets and the 5 s command-send bound are all in these builds. Verify rapid AOD taps on device; if the panel still freezes, capture `dmesg` and `logcat`.
+
 ## 19 Nov 2026 — About phone values, UDFPS sensor HAL, AOD freeze fix
 
 ### Fixes
