@@ -13,6 +13,10 @@
 
 * Screen-off / AOD UDFPS: the 19 Nov gate fixes, the trylock-only safety nets and the 5 s command-send bound are all in these builds. Verify rapid AOD taps on device; if the panel still freezes, capture `dmesg` and `logcat`.
 
+### Post-release
+
+* a42xq: `ro.infinity.camera` now uses uppercase `MP`, so About phone shows `48MP + 8MP + 5MP + 5MP` instead of `48mp + 8mp + 5mp + 5mp` (`2b7993c`). The 20.11 zips above predate this change; it will be in the next/official build.
+
 ## 19 Nov 2026 — About phone values, UDFPS sensor HAL, AOD freeze fix
 
 ### Fixes
